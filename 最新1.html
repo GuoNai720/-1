@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>交易所返现注册页 - 最高90%返佣</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0f6ff',
+              100: '#e0edff',
+              500: '#165DFF',
+              600: '#0d4ad9',
+              700: '#0a3ab3'
+            },
+            secondary: '#FF4D4F',
+            accent: '#FF8F4F',
+            neutral: {
+              100: '#F5F5F5',
+              200: '#E5E5E5',
+              300: '#D4D4D4',
+              400: '#A3A3A3',
+              500: '#737373',
+              600: '#525252',
+              700: '#404040',
+              800: '#262626',
+              850: '#1e1e1e',
+              900: '#171717',
+            },
+            dark: '#0F172A',
+            'dark-light': '#1E293B',
+            'dark-lighter': '#334155',
+            'text-light': '#F8FAFC',
+            'text-mid': '#94A3B8',
+            'text-dark': '#64748B',
+            danger: '#F53F3F'
+          },
+          fontFamily: {
+            inter: ['Inter', 'sans-serif'],
+          },
+          boxShadow: {
+            'card': '0 10px 30px -15px rgba(0, 0, 0, 0.3)',
+            'card-hover': '0 15px 40px -10px rgba(22, 93, 255, 0.3)',
+            'btn': '0 8px 20px -5px rgba(22, 93, 255, 0.3)',
+            'btn-hover': '0 12px 30px -5px rgba(22, 93, 255, 0.4)',
+            'floating': '0 10px 30px rgba(0, 0, 0, 0.4)'
+          }
+        },
+      }
+    }
+  </script>
+  <style type="text/css">
+    @layer utilities {
+      .gradient-bg {
+        background: radial-gradient(circle at top right, rgba(22, 93, 255, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at bottom left, rgba(255, 77, 79, 0.1) 0%, transparent 50%);
+      }
+      .card-hover {
+        @apply transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1.5;
+      }
+      .btn-effect {
+        @apply transition-all duration-300 hover:shadow-btn-hover hover:scale-[1.03] active:scale-[0.98];
+      }
+      .animate-pulse-slow {
+        animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
+      }
+      .glass-effect {
+        backdrop-filter: blur(10px);
+        background-color: rgba(30, 41, 59, 0.7);
+      }
+      .animate-shine {
+        animation: shine 2s infinite;
+      }
+      @keyframes shine {
+        100% {
+          transform: translateX(200%);
+        }
+      }
+      .animate-bounce-slow {
+        animation: bounce 3s infinite;
+      }
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+      }
+    }
+    body {
+      background: #0f172a;
+    }
+    .card-badge {
+      position: absolute;
+      top: -10px;
+      right: 15px;
+      background: linear-gradient(45deg, #FF4D4F, #ff8f4f);
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(255, 77, 79, 0.3);
+      z-index: 10;
+    }
+    .exchange-logo {
+      transition: transform 0.3s ease;
+    }
+    .card-hover:hover .exchange-logo {
+      transform: scale(1.1);
+    }
+    
+    /* 计算器按钮样式 */
+    .calculator-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 90;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #165DFF, #00B42A);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .calculator-btn:hover {
+      transform: translateY(-5px) scale(1.1);
+      box-shadow: 0 15px 40px rgba(22, 93, 255, 0.4);
+    }
+    
+    /* 模态框样式 */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    
+    .modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    
+    .modal-content {
+      width: 95%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #1E293B;
+      border-radius: 16px;
+      padding: 24px;
+      transform: translateY(30px);
+      transition: transform 0.3s ease;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal.active .modal-content {
+      transform: translateY(0);
+    }
+    
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      color: #94A3B8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .close-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+    
+    /* 微信弹窗样式 */
+    .wechat-modal-content {
+      width: 95%;
+      max-width: 450px;
+      background: #1E293B;
+      border-radius: 16px;
+      padding: 30px;
+      position: relative;
+      text-align: center;
+    }
+    
+    .wechat-qrcode {
+      width: 220px;
+      height: 220px;
+      margin: 20px auto;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .wechat-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 100px;
+      color: #07C160;
+      z-index: 2;
+    }
+    
+    .wechat-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        45deg,
+        #f0f0f0,
+        #f0f0f0 10px,
+        #e0e0e0 10px,
+        #e0e0e0 20px
+      );
+      opacity: 0.5;
+      z-index: 1;
+    }
+    
+    .wechat-id {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 12px 20px;
+      border-radius: 50px;
+      display: inline-flex;
+      align-items: center;
+      margin-top: 10px;
+      font-weight: 600;
+      color: #FF8F4F;
+    }
+    
+    .wechat-id i {
+      margin-right: 10px;
+      color: #07C160;
+    }
+  </style>
+</head>
+<body class="text-neutral-100 font-inter gradient-bg min-h-screen">
+  <!-- 计算器按钮 -->
+  <div class="calculator-btn">
+    <i class="fa fa-calculator"></i>
+  </div>
+  
+  <!-- 计算器模态框 -->
+  <div class="modal">
+    <div class="modal-content relative">
+      <div class="close-btn">
+        <i class="fa fa-times"></i>
+      </div>
+      
+      <!-- 计算器标题 -->
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold mb-2 text-text-light">虚拟货币合约手续费计算器</h2>
+        <p class="text-text-mid">快速计算您频繁开单的交易成本</p>
+      </div>
+      
+      <!-- 计算器卡片 -->
+      <div class="bg-dark-lighter rounded-xl shadow-xl p-4 sm:p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- 输入区域 -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4 flex items-center">
+              <i class="fa fa-calculator text-primary mr-2"></i>
+              输入参数
+            </h3>
+            
+            <div class="space-y-5">
+              <!-- 每单交易金额 -->
+              <div>
+                <label class="block text-text-mid mb-2 text-sm">每单交易金额 (USDT)</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-dark">$</span>
+                  <input type="number" id="tradeAmount" value="1000" min="1" 
+                    class="w-full bg-dark-light border border-dark-lighter rounded-lg px-8 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
+                </div>
+              </div>
+              
+              <!-- 每日交易次数 -->
+              <div>
+                <label class="block text-text-mid mb-2 text-sm">每日交易次数 (单)</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-dark">
+                    <i class="fa fa-exchange"></i>
+                  </span>
+                  <input type="number" id="tradeCount" value="10" min="1" 
+                    class="w-full bg-dark-light border border-dark-lighter rounded-lg px-8 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
+                </div>
+              </div>
+              
+              <!-- 交易所选择 -->
+              <div>
+                <label class="block text-text-mid mb-2 text-sm">交易所</label>
+                <div class="relative">
+                  <select id="exchange" class="w-full bg-dark-light border border-dark-lighter rounded-lg px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
+                    <option value="binance">币安 (Binance)</option>
+                    <option value="okx">OKX</option>
+                    <option value="huobi">火币 (Huobi)</option>
+                    <option value="bybit">Bybit</option>
+                  </select>
+                  <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <i class="fa fa-chevron-down text-text-dark"></i>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 交易类型 -->
+              <div>
+                <label class="block text-text-mid mb-2 text-sm">交易类型</label>
+                <div class="grid grid-cols-3 gap-3">
+                  <label class="bg-dark-light border border-dark-lighter rounded-lg p-3 text-center cursor-pointer transition-all hover:bg-dark-lighter/80">
+                    <input type="radio" name="tradeType" value="taker" checked class="sr-only">
+                    <span class="block text-sm">全部吃单</span>
+                    <span class="block text-xs text-text-dark mt-1">Taker</span>
+                  </label>
+                  <label class="bg-dark-light border border-dark-lighter rounded-lg p-3 text-center cursor-pointer transition-all hover:bg-dark-lighter/80">
+                    <input type="radio" name="tradeType" value="maker" class="sr-only">
+                    <span class="block text-sm">全部挂单</span>
+                    <span class="block text-xs text-text-dark mt-1">Maker</span>
+                  </label>
+                  <label class="bg-dark-light border border-dark-lighter rounded-lg p-3 text-center cursor-pointer transition-all hover:bg-dark-lighter/80">
+                    <input type="radio" name="tradeType" value="mixed" class="sr-only">
+                    <span class="block text-sm">混合</span>
+                    <span class="block text-xs text-text-dark mt-1">50%/50%</span>
+                  </label>
+                </div>
+              </div>
+              
+              <!-- 平台币折扣 -->
+              <div class="flex items-center justify-between">
+                <label class="flex items-center cursor-pointer">
+                  <input type="checkbox" id="platformTokenDiscount" class="sr-only peer">
+                  <div class="relative w-11 h-6 bg-dark-lighter rounded-full peer-checked:bg-primary transition-colors">
+                    <div class="absolute left-1 top-1 bg-text-light w-4 h-4 rounded-full transition-transform peer-checked:translate-x-5"></div>
+                  </div>
+                  <span class="ml-3 text-text-mid">使用平台币抵扣 (25%)</span>
+                </label>
+              </div>
+              
+              <!-- 计算按钮 -->
+              <button id="calculateBtn" class="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-lg transition-all flex items-center justify-center">
+                <i class="fa fa-calculator mr-2"></i>
+                计算手续费
+              </button>
+            </div>
+          </div>
+          
+          <!-- 结果区域 -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4 flex items-center">
+              <i class="fa fa-bar-chart text-secondary mr-2"></i>
+              计算结果
+            </h3>
+            
+            <div class="bg-dark rounded-lg p-5 h-full flex flex-col">
+              <!-- 总手续费 -->
+              <div class="mb-6">
+                <p class="text-text-mid text-sm mb-1">每日总手续费</p>
+                <div class="flex items-end">
+                  <span id="totalFee" class="text-3xl font-bold text-white">15.00</span>
+                  <span class="ml-1 text-text-mid">USDT</span>
+                </div>
+                <div class="mt-2 h-1 w-full bg-dark-lighter rounded-full overflow-hidden">
+                  <div id="feeProgress" class="h-full bg-primary rounded-full" style="width: 60%"></div>
+                </div>
+              </div>
+              
+              <!-- 详细信息 -->
+              <div class="space-y-4 flex-grow">
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="bg-dark-lighter/50 rounded-lg p-3">
+                    <p class="text-xs text-text-dark mb-1">单次开仓</p>
+                    <p id="openFee" class="text-lg font-semibold">0.75 USDT</p>
+                  </div>
+                  <div class="bg-dark-lighter/50 rounded-lg p-3">
+                    <p class="text-xs text-text-dark mb-1">单次平仓</p>
+                    <p id="closeFee" class="text-lg font-semibold">0.75 USDT</p>
+                  </div>
+                </div>
+                
+                <div class="bg-dark-lighter/50 rounded-lg p-3">
+                  <p class="text-xs text-text-dark mb-1">每单总手续费</p>
+                  <p id="perTradeFee" class="text-lg font-semibold">1.50 USDT</p>
+                </div>
+                
+                <div class="bg-dark-lighter/50 rounded-lg p-3">
+                  <p class="text-xs text-text-dark mb-1">月手续费 (30天)</p>
+                    <p id="monthlyFee" class="text-lg font-semibold text-danger">450.00 USDT</p>
+                </div>
+              </div>
+              
+              <!-- 提示信息 -->
+              <div class="mt-6 p-3 bg-primary/10 border border-primary/20 rounded-lg text-sm text-text-mid">
+                <i class="fa fa-info-circle text-primary mr-1"></i>
+                <span>以上计算基于所选交易所的标准费率，实际费用可能因市场情况和交易层级有所不同。</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 费率说明 -->
+      <div class="bg-dark-lighter rounded-xl shadow-xl p-4 sm:p-6 mt-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center">
+          <i class="fa fa-info-circle text-primary mr-2"></i>
+          交易所标准费率参考
+        </h3>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-dark-lighter">
+                <th class="py-3 text-left font-medium text-text-mid">交易所</th>
+                <th class="py-3 text-left font-medium text-text-mid">Maker费率</th>
+                <th class="py-3 text-left font-medium text-text-mid">Taker费率</th>
+                <th class="py-3 text-left font-medium text-text-mid">平台币折扣</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-dark-lighter">
+              <tr>
+                <td class="py-3">币安 (Binance)</td>
+                <td class="py-3">0.02%</td>
+                <td class="py-3">0.075%</td>
+                <td class="py-3">BNB抵扣 -25%</td>
+              </tr>
+              <tr>
+                <td class="py-3">OKX</td>
+                <td class="py-3">0.02%</td>
+                <td class="py-3">0.05%</td>
+                <td class="py-3">OKB抵扣 -20%</td>
+              </tr>
+              <tr>
+                <td class="py-3">火币 (Huobi)</td>
+                <td class="py-3">0.02%</td>
+                <td class="py-3">0.06%</td>
+                <td class="py-3">HT抵扣 -20%</td>
+              </tr>
+              <tr>
+                <td class="py-3">Bybit</td>
+                <td class="py-3">0.01%</td>
+                <td class="py-3">0.075%</td>
+                <td class="py-3">BYBIT抵扣 -10%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 微信弹窗 -->
+  <div class="modal" id="wechatModal">
+    <div class="modal-content wechat-modal-content">
+      <div class="close-btn close-wechat">
+        <i class="fa fa-times"></i>
+      </div>
+      
+      <div class="text-center">
+        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-green-600 mx-auto flex items-center justify-center mb-4">
+          <i class="fa fa-wechat text-white text-3xl"></i>
+        </div>
+        
+        <h2 class="text-2xl font-bold mb-3 text-text-light">添加微信加入沟通群</h2>
+        <p class="text-text-mid mb-6">一起讨论了解最新返佣资讯</p>
+        
+        <div class="wechat-qrcode">
+          <div class="wechat-bg"></div>
+          <i class="fa fa-wechat wechat-icon"></i>
+        </div>
+        
+        <div class="wechat-id">
+          <i class="fa fa-weixin"></i>
+          <span>Guonai-720</span>
+        </div>
+        
+        <p class="text-sm text-text-mid mt-6">扫码或搜索微信号添加，备注"返佣咨询"优先通过</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="max-w-5xl mx-auto px-4 py-8 sm:py-12">
+    <!-- 头部 -->
+    <header class="text-center mb-8 sm:mb-12">
+      <div class="inline-flex items-center bg-primary-600/20 px-4 py-1 rounded-full mb-4">
+        <span class="w-2 h-2 rounded-full bg-primary-500 mr-2 animate-pulse-slow"></span>
+        <span class="text-primary-300 text-sm">最高返佣90% · 限时优惠</span>
+      </div>
+      <h1 class="text-[clamp(2rem,5vw,3rem)] font-bold mb-4 tracking-tight bg-gradient-to-r from-primary-500 to-secondary bg-clip-text text-transparent">
+        全球主流交易所返现
+      </h1>
+      <p class="text-neutral-400 text-lg max-w-2xl mx-auto">
+        通过专属通道注册，享受<span class="font-bold text-primary-300">行业最高返佣比例</span>，交易手续费直降
+      </p>
+    </header>
+    
+    <!-- 功能亮点 -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div class="bg-neutral-800/50 backdrop-blur-sm rounded-lg p-3 text-center">
+        <div class="w-10 h-10 rounded-full bg-primary-500/10 flex items-center justify-center mx-auto mb-2">
+          <i class="fa fa-percent text-primary-300"></i>
+        </div>
+        <p class="text-sm font-medium">最高90%返佣</p>
+      </div>
+      <div class="bg-neutral-800/50 backdrop-blur-sm rounded-lg p-3 text-center">
+        <div class="w-10 h-10 rounded-full bg-primary-500/10 flex items-center justify-center mx-auto mb-2">
+          <i class="fa fa-bolt text-primary-300"></i>
+        </div>
+        <p class="text-sm font-medium">实时到账</p>
+      </div>
+      <div class="bg-neutral-800/50 backdrop-blur-sm rounded-lg p-3 text-center">
+        <div class="w-10 h-10 rounded-full bg-primary-500/10 flex items-center justify-center mx-auto mb-2">
+          <i class="fa fa-shield text-primary-300"></i>
+        </div>
+        <p class="text-sm font-medium">安全可靠</p>
+      </div>
+      <div class="bg-neutral-800/50 backdrop-blur-sm rounded-lg p-3 text-center">
+        <div class="w-10 h-10 rounded-full bg-primary-500/10 flex items-center justify-center mx-auto mb-2">
+          <i class="fa fa-headphones text-primary-300"></i>
+        </div>
+        <p class="text-sm font-medium">专属客服</p>
+      </div>
+    </div>
+    
+    <!-- 交易所列表 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+      
+      <!-- 欧易 -->
+      <div class="bg-gradient-to-br from-neutral-800 to-neutral-850 rounded-2xl p-6 relative overflow-hidden card-hover border border-neutral-700">
+        <div class="relative z-10">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-4">
+              <div class="exchange-logo logo-okx w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+                <span class="font-bold text-blue-300">OKX</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-lg">欧易 OKX</h3>
+                <p class="text-neutral-400 text-sm">全球领先交易所</p>
+              </div>
+            </div>
+            <div class="bg-gradient-to-br from-secondary to-orange-500 px-3 py-1 rounded-lg">
+              <span class="text-white font-bold text-xl">45%</span>
+            </div>
+          </div>
+          <div class="flex justify-between text-sm text-neutral-400 mb-4">
+            <div class="flex items-center">
+              <i class="fa fa-users mr-1 text-primary-500"></i>
+              <span>注册用户: 5000万+</span>
+            </div>
+            <div class="flex items-center">
+              <i class="fa fa-chart-line mr-1 text-primary-500"></i>
+              <span>24h交易量: $28亿</span>
+            </div>
+          </div>
+          <a href="https://www.ouxyi.io/ul/6CngT5?channelId=53261517" class="block w-full bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white text-center py-2.5 rounded-lg transition-all font-medium">
+            立即注册
+          </a>
+        </div>
+      </div>
+      
+      <!-- 深币 -->
+      <div class="bg-gradient-to-br from-neutral-800 to-neutral-850 rounded-2xl p-6 relative overflow-hidden card-hover border border-neutral-700">
+        <div class="relative z-10">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-4">
+              <div class="exchange-logo logo-shenbi w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center">
+                <span class="font-bold text-purple-300">深</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-lg">深币</h3>
+                <p class="text-neutral-400 text-sm">新兴数字资产平台</p>
+              </div>
+            </div>
+            <div class="bg-gradient-to-br from-secondary to-orange-500 px-3 py-1 rounded-lg">
+              <span class="text-white font-bold text-xl">90%</span>
+            </div>
+          </div>
+          <div class="flex justify-between text-sm text-neutral-400 mb-4">
+            <div class="flex items-center">
+              <i class="fa fa-users mr-1 text-primary-500"></i>
+              <span>注册用户: 800万+</span>
+            </div>
+            <div class="flex items-center">
+              <i class="fa fa-chart-line mr-1 text-primary-500"></i>
+              <span>24h交易量: $8亿</span>
+            </div>
+          </div>
+          <a href="https://s.deepcoin.life/sfjieid" class="block w-full bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white text-center py-2.5 rounded-lg transition-all font-medium">
+            立即注册
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 主要注册按钮 -->
+    <div class="text-center mb-12 relative">
+      <button id="mainRegisterBtn" class="inline-block bg-gradient-to-r from-primary-500 to-accent text-white px-12 py-5 rounded-2xl text-xl font-bold btn-effect shadow-lg relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-30 -translate-x-full animate-shine"></div>
+        <i class="fa fa-rocket mr-3"></i>立即注册领取最高返现
+      </button>
+      <p class="text-neutral-300 mt-4">已有超过 <span class="text-primary-300 font-bold">128,450</span> 用户通过本平台获得返佣</p>
+    </div>
+    
+    <!-- 返佣流程说明 -->
+    <div class="bg-gradient-to-br from-neutral-800 to-neutral-850 rounded-2xl p-8 mb-8 border border-neutral-700">
+      <h2 class="text-2xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent">
+        返佣流程说明
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="text-center p-5 bg-neutral-800/50 rounded-xl border border-neutral-700 transition-all hover:border-primary-500/50">
+          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primary-500/20 to-accent/20 flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl font-bold text-primary-500">1</span>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">通过专属链接注册</h3>
+          <p class="text-neutral-400">点击上方按钮注册交易所账户</p>
+        </div>
+        
+        <div class="text-center p-5 bg-neutral-800/50 rounded-xl border border-neutral-700 transition-all hover:border-primary-500/50">
+          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primary-500/20 to-accent/20 flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl font-bold text-primary-500">2</span>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">完成身份认证</h3>
+          <p class="text-neutral-400">在交易所完成KYC身份验证</p>
+        </div>
+        
+        <div class="text-center p-5 bg-neutral-800/50 rounded-xl border border-neutral-700 transition-all hover:border-primary-500/50">
+          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primary-500/20 to-accent/20 flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl font-bold text-primary-500">3</span>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">开始交易</h3>
+          <p class="text-neutral-400">进行任意交易操作</p>
+        </div>
+        
+        <div class="text-center p-5 bg-neutral-800/50 rounded-xl border border-neutral-700 transition-all hover:border-primary-500/50">
+          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primary-500/20 to-accent/20 flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl font-bold text-primary-500">4</span>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">获取返佣</h3>
+          <p class="text-neutral-400">系统自动计算并发放返佣</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 注意事项和常见问题 -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+      <!-- 注意事项 -->
+      <div class="bg-gradient-to-br from-neutral-800 to-neutral-850 rounded-2xl p-6 border border-neutral-700">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary-500/20 to-accent/20 flex items-center justify-center mr-4">
+            <i class="fa fa-info-circle text-primary-500 text-xl"></i>
+          </div>
+          <h2 class="text-xl font-bold">注意事项</h2>
+        </div>
+        <ul class="space-y-5">
+          <li class="flex items-start">
+            <div class="w-8 h-8 rounded-full bg-primary-500/10 flex items-center justify-center flex-shrink-0 mt-1 mr-3">
+              <i class="fa fa-check text-primary-500"></i>
+            </div>
+            <div>
+              <span class="font-medium text-neutral-100">通过本页面注册即可获得对应返佣比例</span>
+              <p class="text-neutral-400 text-sm mt-1">返佣比例以注册时间为准</p>
+            </div>
+          </li>
+          <li class="flex items-start">
+            <div class="w-8 h-8 rounded-full bg-primary-500/10 flex items-center justify-center flex-shrink-0 mt-1 mr-3">
+              <i class="fa fa-check text-primary-500"></i>
+            </div>
+            <div>
+              <span class="font-medium text-neutral-100">返佣将在交易完成后72小时内发放</span>
+              <p class="text-neutral-400 text-sm mt-1">发放至您的交易所账户</p>
+            </div>
+          </li>
+          <li class="flex items-start">
+            <div class="w-8 h-8 rounded-full bg-primary-500/10 flex items-center justify-center flex-shrink-0 mt-1 mr-3">
+              <i class="fa fa-check text-primary-500"></i>
+            </div>
+            <div>
+              <span class="font-medium text-neutral-100">如有任何疑问，可联系专属客服</span>
+              <p class="text-neutral-400 text-sm mt-1">微信：Guonai-720（24小时在线）</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- 常见问题 -->
+      <div class="bg-gradient-to-br from-neutral-800 to-neutral-850 rounded-2xl p-6 border border-neutral-700">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary-500/20 to-accent/20 flex items-center justify-center mr-4">
+            <i class="fa fa-question-circle text-primary-500 text-xl"></i>
+          </div>
+          <h2 class="text-xl font-bold">常见问题</h2>
+        </div>
+        <div class="space-y-5">
+          <div class="bg-neutral-800/30 rounded-xl p-4">
+            <h3 class="font-semibold text-neutral-100 flex items-center">
+              <i class="fa fa-angle-right text-primary-500 mr-2"></i>返佣如何计算？
+            </h3>
+            <p class="text-neutral-400 text-sm mt-2 pl-6">返佣金额 = 交易手续费 × 返佣比例。例如您支付了$10手续费，返佣比例为40%，则您将获得$4返佣。</p>
+          </div>
+          <div class="bg-neutral-800/30 rounded-xl p-4">
+            <h3 class="font-semibold text-neutral-100 flex items-center">
+              <i class="fa fa-angle-right text-primary-500 mr-2"></i>返佣多久到账？
+            </h3>
+            <p class="text-neutral-400 text-sm mt-2 pl-6">交易完成后72小时内自动发放到您的交易所账户，可在资产页面查看。</p>
+          </div>
+          <div class="bg-neutral-800/30 rounded-xl p-4">
+            <h3 class="font-semibold text-neutral-100 flex items-center">
+              <i class="fa fa-angle-right text-primary-500 mr-2"></i>需要额外操作吗？
+            </h3>
+            <p class="text-neutral-400 text-sm mt-2 pl-6">只需通过我们的链接注册并完成交易，无需其他操作，系统自动计算返佣。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer class="text-center text-neutral-500 text-sm py-8 border-t border-neutral-800/50">
+      <div class="flex flex-wrap justify-center items-center gap-8 mb-6">
+        <a href="#" class="text-neutral-400 hover:text-white transition-colors flex items-center">
+          <i class="fa fa-file-text-o mr-2"></i> 用户协议
+        </a>
+        <a href="#" class="text-neutral-400 hover:text-white transition-colors flex items-center">
+          <i class="fa fa-shield mr-2"></i> 隐私政策
+        </a>
+        <a href="#" class="text-neutral-400 hover:text-white transition-colors flex items-center">
+          <i class="fa fa-question-circle mr-2"></i> 帮助中心
+        </a>
+        <a href="#" class="text-neutral-400 hover:text-white transition-colors flex items-center">
+          <i class="fa fa-phone mr-2"></i> 联系我们
+        </a>
+      </div>
+      <p class="mb-1">本页面仅为推广使用，与各交易所官方品牌无直接关联</p>
+      <p>© 2025 交易所版权所有，保留所有权利 | 沪ICP备12345678号</p>
+    </footer>
+  </div>
+  
+  <script>
+    // 交易所费率配置
+    const exchangeFees = {
+      binance: { maker: 0.0002, taker: 0.00075 },
+      okx: { maker: 0.0002, taker: 0.0005 },
+      huobi: { maker: 0.0002, taker: 0.0006 },
+      bybit: { maker: 0.0001, taker: 0.00075 },
+      custom: { maker: 0.0002, taker: 0.00075 } // 默认使用币安费率
+    };
+    
+    // 获取DOM元素
+    const tradeAmountInput = document.getElementById('tradeAmount');
+    const tradeCountInput = document.getElementById('tradeCount');
+    const exchangeSelect = document.getElementById('exchange');
+    const tradeTypeRadios = document.querySelectorAll('input[name="tradeType"]');
+    const platformTokenDiscountCheckbox = document.getElementById('platformTokenDiscount');
+    const calculateBtn = document.getElementById('calculateBtn');
+    
+    // 结果元素
+    const totalFeeElement = document.getElementById('totalFee');
+    const openFeeElement = document.getElementById('openFee');
+    const closeFeeElement = document.getElementById('closeFee');
+    const perTradeFeeElement = document.getElementById('perTradeFee');
+    const monthlyFeeElement = document.getElementById('monthlyFee');
+    const feeProgressElement = document.getElementById('feeProgress');
+    
+    // 计算手续费
+    function calculateFees() {
+      // 获取输入值
+      const tradeAmount = parseFloat(tradeAmountInput.value) || 0;
+      const tradeCount = parseInt(tradeCountInput.value) || 0;
+      const exchange = exchangeSelect.value;
+      const platformTokenDiscount = platformTokenDiscountCheckbox.checked;
+      
+      // 获取选中的交易类型
+      let tradeType = 'taker';
+      tradeTypeRadios.forEach(radio => {
+        if (radio.checked) {
+          tradeType = radio.value;
+        }
+      });
+      
+      // 获取交易所费率
+      const fees = exchangeFees[exchange] || exchangeFees.binance;
+      
+      // 计算开仓和平仓手续费
+      let openFeeRate, closeFeeRate;
+      switch (tradeType) {
+        case 'taker':
+          openFeeRate = closeFeeRate = fees.taker;
+          break;
+        case 'maker':
+          openFeeRate = closeFeeRate = fees.maker;
+          break;
+        case 'mixed':
+          // 50% Taker + 50% Maker
+          openFeeRate = (fees.taker + fees.maker) / 2;
+          closeFeeRate = (fees.taker + fees.maker) / 2;
+          break;
+      }
+      
+      // 计算每笔交易的手续费
+      const openFee = tradeAmount * openFeeRate;
+      const closeFee = tradeAmount * closeFeeRate;
+      const perTradeFee = openFee + closeFee;
+      
+      // 应用平台币折扣
+      const discountFactor = platformTokenDiscount ? 0.75 : 1;
+      const discountedOpenFee = openFee * discountFactor;
+      const discountedCloseFee = closeFee * discountFactor;
+      const discountedPerTradeFee = perTradeFee * discountFactor;
+      
+      // 计算总手续费
+      const totalFee = discountedPerTradeFee * tradeCount;
+      const monthlyFee = totalFee * 30;
+      
+      // 更新UI
+      totalFeeElement.textContent = totalFee.toFixed(2);
+      openFeeElement.textContent = discountedOpenFee.toFixed(2) + ' USDT';
+      closeFeeElement.textContent = discountedCloseFee.toFixed(2) + ' USDT';
+      perTradeFeeElement.textContent = discountedPerTradeFee.toFixed(2) + ' USDT';
+      monthlyFeeElement.textContent = monthlyFee.toFixed(2) + ' USDT';
+      
+      // 更新进度条
+      const progressPercentage = Math.min(100, (totalFee / (tradeAmount * tradeCount * 0.002)) * 100);
+      feeProgressElement.style.width = `${progressPercentage}%`;
+      
+      // 添加动画效果
+      totalFeeElement.classList.add('animate-pulse');
+      setTimeout(() => {
+        totalFeeElement.classList.remove('animate-pulse');
+      }, 1000);
+    }
+    
+    // 初始化计算
+    calculateFees();
+    
+    // 添加事件监听器
+    calculateBtn.addEventListener('click', calculateFees);
+    tradeAmountInput.addEventListener('input', calculateFees);
+    tradeCountInput.addEventListener('input', calculateFees);
+    exchangeSelect.addEventListener('change', calculateFees);
+    platformTokenDiscountCheckbox.addEventListener('change', calculateFees);
+    
+    // 交易类型选择事件
+    tradeTypeRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        // 更新选中样式
+        tradeTypeRadios.forEach(r => {
+          const label = r.closest('label');
+          if (r.checked) {
+            label.classList.add('border-primary-500', 'bg-primary-500/10');
+          } else {
+            label.classList.remove('border-primary-500', 'bg-primary-500/10');
+          }
+        });
+        calculateFees();
+      });
+    });
+    
+    // 初始选中样式
+    tradeTypeRadios.forEach(r => {
+      const label = r.closest('label');
+      if (r.checked) {
+        label.classList.add('border-primary-500', 'bg-primary-500/10');
+      }
+    });
+    
+    // 模态框控制
+    const modal = document.querySelector('.modal');
+    const calculatorBtn = document.querySelector('.calculator-btn');
+    const closeBtn = document.querySelector('.close-btn');
+    const closeWechatBtn = document.querySelector('.close-wechat');
+    
+    calculatorBtn.addEventListener('click', () => {
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+    
+    closeBtn.addEventListener('click', () => {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+    
+    // 点击模态框背景关闭
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+    
+    // 微信弹窗控制
+    const wechatModal = document.getElementById('wechatModal');
+    const mainRegisterBtn = document.getElementById('mainRegisterBtn');
+    
+    mainRegisterBtn.addEventListener('click', () => {
+      wechatModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+    
+    closeWechatBtn.addEventListener('click', () => {
+      wechatModal.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+    
+    wechatModal.addEventListener('click', (e) => {
+      if (e.target === wechatModal) {
+        wechatModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  </script>
+</body>
+</html>
